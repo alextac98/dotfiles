@@ -10,3 +10,6 @@
 [submodule "zsh/fzf"]
 	path = zsh/fzf
 	url = git@github.com:junegunn/fzf.git
+[submodule "SlicerSettings"]
+	path = SlicerSettings
+	url = git@github.com:TacTech-3DPrinters/SlicerSettings.git
