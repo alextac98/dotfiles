@@ -1,0 +1,31 @@
+#!/usr/bin/bash
+
+
+##########################
+##### Repo Locations #####
+##########################
+
+export GIT_COMMON_CONFIG=$HOME/src/falcon/common-config
+export SVN_FSW_CONFIG=$HOME/src/falcon/config
+export ROCKET=$HOME/src/rocket
+export SWRELEASE=$HOME/src/falcon/swrelease
+export SIMS=$HOME/src/sims
+export SVN_SIM=$SIMS
+export XSIM=$SIMS/xsim
+export SVN_XSIM=$XSIM
+export GSW=$HOME/src/gsw-configs-svn
+
+export AUTOTEST=$HOME/src/autotest
+export CONFIG=$SVN_FSW_CONFIG
+export COMMONCONFIG=$GIT_COMMON_CONFIG
+
+# If you want to batch creating stages, uncomment below
+# export COMMON_CONFIG_NO_LOAD_CACHE=1
+
+###################
+##### Aliases #####
+###################
+
+alias update-repos="$HOME/update-repos.sh"
+alias archon-setup="cd /sx/proxy/spacex && source /sx/archon-venv/bin/activate"
+alias deploy-hitl="python $HOME/.dotfiles/scripts/deploy_hitl.py"

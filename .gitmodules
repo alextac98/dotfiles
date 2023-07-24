@@ -1,0 +1,12 @@
+[submodule "zsh/ohmyzsh"]
+	path = zsh/ohmyzsh
+	url = https://github.com/ohmyzsh/ohmyzsh.git
+[submodule "zsh/configs/themes/powerlevel10k"]
+	path = zsh/configs/themes/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k.git
+[submodule "zsh/configs/plugins/zsh-autosuggestions"]
+	path = zsh/configs/plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule "zsh/fzf"]
+	path = zsh/fzf
+	url = git@github.com:junegunn/fzf.git
