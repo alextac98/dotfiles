@@ -1,0 +1,8 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": ["starship.toml"],
+            "url": "https://starship.rs/config-schema.json"
+        }
+    ]
+}
