@@ -1,4 +1,7 @@
 {
+    "recommendations": [
+        "tamasfe.even-better-toml",
+    ],
     "json.schemas": [
         {
             "fileMatch": ["starship.toml"],
