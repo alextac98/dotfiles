@@ -1,0 +1,20 @@
+---
+# Apt packages for Debian/Ubuntu
+
+packages:
+  - git
+  - curl
+  - wget
+  - zsh
+  - tmux
+  - neovim
+  - fzf
+  - ripgrep
+  - fd-find      # Note: binary is 'fdfind', we symlink to 'fd'
+  - jq
+  - tree
+  - htop
+  - bat          # Note: binary is 'batcat', we symlink to 'bat'
+  - fontconfig
+  - xclip
+  - build-essential

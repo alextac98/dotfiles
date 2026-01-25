@@ -1,0 +1,11 @@
+---
+# macOS-specific variables
+
+homebrew_prefix: /opt/homebrew
+clipboard_cmd: pbcopy
+
+# Font installation path
+font_dir: "{{ ansible_facts.env.HOME }}/Library/Fonts"
+
+# Ghostty config path (macOS uses Application Support)
+ghostty_config_dir: "{{ ansible_facts.env.HOME }}/Library/Application Support/com.mitchellh.ghostty"

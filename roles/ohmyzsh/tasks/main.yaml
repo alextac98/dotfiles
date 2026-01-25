@@ -1,0 +1,52 @@
+---
+# Install Oh My Zsh and plugins
+
+- name: Set Oh My Zsh installation path
+  set_fact:
+    omz_dir: "{{ xdg_data_home }}/oh-my-zsh"
+    omz_custom: "{{ xdg_data_home }}/oh-my-zsh/custom"
+
+- name: Check if Oh My Zsh is already installed
+  stat:
+    path: "{{ omz_dir }}"
+  register: omz_check
+
+- name: Clone Oh My Zsh
+  git:
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+    dest: "{{ omz_dir }}"
+    depth: 1
+  when: not omz_check.stat.exists
+
+- name: Ensure custom plugins directory exists
+  file:
+    path: "{{ omz_custom }}/plugins"
+    state: directory
+    mode: '0755'
+
+- name: Install Zsh plugins
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ omz_custom }}/plugins/{{ item.name }}"
+    depth: 1
+  loop: "{{ zsh_plugins }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Update Oh My Zsh (if already installed)
+  command: git pull --rebase
+  args:
+    chdir: "{{ omz_dir }}"
+  when: omz_check.stat.exists
+  changed_when: false
+  failed_when: false
+
+- name: Update Zsh plugins
+  command: git pull --rebase
+  args:
+    chdir: "{{ omz_custom }}/plugins/{{ item.name }}"
+  loop: "{{ zsh_plugins }}"
+  loop_control:
+    label: "{{ item.name }}"
+  changed_when: false
+  failed_when: false

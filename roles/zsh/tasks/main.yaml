@@ -1,0 +1,32 @@
+---
+# Zsh configuration
+
+- name: Deploy .zshrc from template
+  template:
+    src: zshrc.j2
+    dest: "{{ ansible_facts.env.HOME }}/.zshrc"
+    mode: '0644'
+    backup: yes
+
+- name: Deploy work aliases (work machines only)
+  copy:
+    src: aliases.work
+    dest: "{{ ansible_facts.env.HOME }}/.aliases.work"
+    mode: '0644'
+  when: is_work_machine | default(false)
+
+- name: Remove work aliases on non-work machines
+  file:
+    path: "{{ ansible_facts.env.HOME }}/.aliases.work"
+    state: absent
+  when: not (is_work_machine | default(false))
+
+- name: Check for local zshrc overrides
+  stat:
+    path: "{{ ansible_facts.env.HOME }}/.zshrc.local"
+  register: zshrc_local
+
+- name: Remind about local overrides
+  debug:
+    msg: "Tip: Create ~/.zshrc.local for machine-specific zsh settings not tracked in git"
+  when: not zshrc_local.stat.exists

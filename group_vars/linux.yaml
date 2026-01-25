@@ -1,0 +1,13 @@
+---
+# Linux-specific variables
+
+clipboard_cmd: "xclip -in -selection clipboard"
+
+# Font installation path
+font_dir: "{{ xdg_data_home }}/fonts"
+
+# Ghostty config path (Linux uses XDG)
+ghostty_config_dir: "{{ config_dir }}/ghostty"
+
+# Starship install method on Linux (no native package in most distros)
+install_starship_from_script: true

@@ -1,0 +1,24 @@
+---
+# Homebrew packages for macOS
+
+packages:
+  - git
+  - zsh
+  - starship
+  - fzf
+  - ripgrep
+  - fd
+  - jq
+  - tmux
+  - neovim
+  - wget
+  - curl
+  - tree
+  - htop
+  - bat
+  - eza
+  - delta  # Better git diffs
+
+casks:
+  - ghostty
+  - visual-studio-code

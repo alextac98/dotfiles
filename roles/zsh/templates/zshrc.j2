@@ -1,0 +1,134 @@
+# {{ ansible_managed }}
+# Zsh configuration - managed by Ansible
+
+# =============================================================================
+# XDG Base Directory Specification
+# =============================================================================
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+# =============================================================================
+# Oh My Zsh Configuration
+# =============================================================================
+export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+ZSH_CUSTOM="$ZSH/custom"
+
+# Plugins to load
+plugins=(
+    git
+{% for plugin in zsh_plugins %}
+    {{ plugin.name }}
+{% endfor %}
+)
+
+# Load Oh My Zsh
+if [[ -d "$ZSH" ]]; then
+    source "$ZSH/oh-my-zsh.sh"
+fi
+
+# =============================================================================
+# FZF Integration
+# =============================================================================
+{% if ansible_facts.os_family == 'Darwin' %}
+# macOS: fzf installed via Homebrew
+if [[ -f "{{ homebrew_prefix }}/opt/fzf/shell/completion.zsh" ]]; then
+    source "{{ homebrew_prefix }}/opt/fzf/shell/completion.zsh"
+    source "{{ homebrew_prefix }}/opt/fzf/shell/key-bindings.zsh"
+fi
+{% else %}
+# Linux: fzf from package manager or manual install
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+[[ -f /usr/share/fzf/completion.zsh ]] && source /usr/share/fzf/completion.zsh
+[[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+[[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
+[[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+{% endif %}
+
+# =============================================================================
+# Starship Prompt
+# =============================================================================
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship.toml"
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+# =============================================================================
+# Platform-Specific Configuration
+# =============================================================================
+{% if ansible_facts.os_family == 'Darwin' %}
+# macOS
+export HOMEBREW_PREFIX="{{ homebrew_prefix }}"
+export PATH="$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin:$PATH"
+export HOMEBREW_NO_ENV_HINTS=1
+
+# Silence macOS zsh warning about bash
+export BASH_SILENCE_DEPRECATION_WARNING=1
+{% else %}
+# Linux
+export PATH="$HOME/.local/bin:$PATH"
+
+# Linuxbrew (if installed)
+if [[ -d "/home/linuxbrew/.linuxbrew" ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+{% endif %}
+
+# =============================================================================
+# Common Aliases
+# =============================================================================
+# Navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# Listing
+{% if ansible_facts.os_family == 'Darwin' %}
+alias ls="eza"
+alias ll="eza -la"
+alias la="eza -a"
+alias lt="eza --tree"
+{% else %}
+alias ll="ls -la --color=auto"
+alias la="ls -A --color=auto"
+alias l="ls -CF --color=auto"
+{% endif %}
+
+# Safety
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+
+# Grep
+alias grep="grep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias egrep="egrep --color=auto"
+
+# Git (beyond oh-my-zsh plugin)
+alias gs="git status"
+alias gd="git diff"
+alias gds="git diff --staged"
+alias gp="git push"
+alias gl="git pull"
+alias glog="git log --oneline --graph --decorate -20"
+
+# Editor
+alias vim="nvim"
+alias vi="nvim"
+
+# =============================================================================
+# Work Configuration
+# =============================================================================
+{% if is_work_machine | default(false) %}
+# Source work-specific aliases and configuration
+if [[ -f "$HOME/.aliases.work" ]]; then
+    source "$HOME/.aliases.work"
+fi
+{% endif %}
+
+# =============================================================================
+# Local Overrides (not tracked in git)
+# =============================================================================
+if [[ -f "$HOME/.zshrc.local" ]]; then
+    source "$HOME/.zshrc.local"
+fi

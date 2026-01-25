@@ -1,0 +1,29 @@
+---
+# Font installation
+
+- name: Ensure font directory exists
+  file:
+    path: "{{ font_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Find font files to install
+  find:
+    paths: "{{ dotfiles_dir }}/roles/fonts/files"
+    patterns: "*.ttf,*.otf"
+    recurse: yes
+  register: font_files
+
+- name: Copy fonts to font directory
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ font_dir }}/{{ item.path | basename }}"
+    mode: '0644'
+  loop: "{{ font_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+
+- name: Refresh font cache (Linux)
+  command: fc-cache -f "{{ font_dir }}"
+  when: ansible_facts.os_family != 'Darwin'
+  changed_when: false

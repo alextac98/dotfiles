@@ -1,0 +1,15 @@
+---
+# Starship prompt configuration (symlinked for live editing)
+
+- name: Ensure config directory exists
+  file:
+    path: "{{ config_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Symlink starship.toml
+  file:
+    src: "{{ dotfiles_dir }}/roles/starship/files/starship.toml"
+    dest: "{{ config_dir }}/starship.toml"
+    state: link
+    force: yes

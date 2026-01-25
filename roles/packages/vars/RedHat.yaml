@@ -1,0 +1,19 @@
+---
+# DNF packages for Fedora/RHEL
+
+packages:
+  - git
+  - curl
+  - wget
+  - zsh
+  - tmux
+  - neovim
+  - fzf
+  - ripgrep
+  - fd-find
+  - jq
+  - tree
+  - htop
+  - bat
+  - fontconfig
+  - xclip

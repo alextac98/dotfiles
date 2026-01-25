@@ -1,0 +1,19 @@
+---
+# Git configuration
+
+- name: Deploy .gitconfig from template
+  template:
+    src: gitconfig.j2
+    dest: "{{ ansible_facts.env.HOME }}/.gitconfig"
+    mode: '0644'
+    backup: yes
+
+- name: Check for local gitconfig
+  stat:
+    path: "{{ ansible_facts.env.HOME }}/.gitconfig.local"
+  register: gitconfig_local
+
+- name: Remind about local git config
+  debug:
+    msg: "Tip: Create ~/.gitconfig.local for machine-specific git settings (e.g., work email)"
+  when: not gitconfig_local.stat.exists

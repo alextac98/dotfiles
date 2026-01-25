@@ -1,0 +1,56 @@
+---
+# Core setup tasks - creates base directories and ensures prerequisites
+
+- name: Assert hostname matches inventory host
+  assert:
+    that:
+      - ansible_facts.hostname == inventory_hostname
+    fail_msg: |
+      Hostname mismatch!
+      
+      Inventory host: {{ inventory_hostname }}
+      Actual hostname: {{ ansible_facts.hostname }}
+      
+      This can happen if:
+        1. You ran with --limit for a different host
+        2. The inventory entry name doesn't match the actual hostname
+      
+      Fix by renaming the inventory entry from '{{ inventory_hostname }}' 
+      to '{{ ansible_facts.hostname }}' in inventory.yaml,
+      or run this playbook on the correct machine.
+    success_msg: "Hostname verified: {{ ansible_facts.hostname }}"
+
+- name: Ensure XDG directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ config_dir }}"
+    - "{{ xdg_data_home }}"
+    - "{{ local_bin }}"
+
+- name: Ensure .local/bin is in PATH check
+  debug:
+    msg: "Ensure {{ local_bin }} is in your PATH"
+
+- name: Check if zsh is installed
+  command: which zsh
+  register: zsh_check
+  changed_when: false
+  failed_when: false
+
+- name: Warn if zsh is not installed
+  debug:
+    msg: "WARNING: zsh is not installed. Run the packages role first."
+  when: zsh_check.rc != 0
+
+- name: Get current shell
+  command: echo $SHELL
+  register: current_shell
+  changed_when: false
+
+- name: Remind about default shell
+  debug:
+    msg: "Current shell is {{ current_shell.stdout }}. To change to zsh: chsh -s $(which zsh)"
+  when: "'/zsh' not in current_shell.stdout"

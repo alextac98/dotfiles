@@ -1,0 +1,9 @@
+---
+# Tmux configuration
+
+- name: Deploy tmux.conf from template
+  template:
+    src: tmux.conf.j2
+    dest: "{{ ansible_facts.env.HOME }}/.tmux.conf"
+    mode: '0644'
+    backup: yes

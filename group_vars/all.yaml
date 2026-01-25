@@ -1,0 +1,31 @@
+---
+# Variables shared across all hosts
+
+# Paths
+dotfiles_dir: "{{ ansible_facts.env.HOME }}/.dotfiles"
+config_dir: "{{ ansible_facts.env.HOME }}/.config"
+xdg_data_home: "{{ ansible_facts.env.HOME }}/.local/share"
+local_bin: "{{ ansible_facts.env.HOME }}/.local/bin"
+
+# OS-specific defaults (overridden by group_vars/darwin.yaml or linux.yaml)
+# These provide fallback values when running on localhost without explicit group membership
+homebrew_prefix: /opt/homebrew
+clipboard_cmd: "{{ 'pbcopy' if ansible_facts.os_family == 'Darwin' else 'xclip -in -selection clipboard' }}"
+font_dir: "{{ ansible_facts.env.HOME + '/Library/Fonts' if ansible_facts.os_family == 'Darwin' else xdg_data_home + '/fonts' }}"
+ghostty_config_dir: "{{ ansible_facts.env.HOME + '/Library/Application Support/com.mitchellh.ghostty' if ansible_facts.os_family == 'Darwin' else config_dir + '/ghostty' }}"
+
+# Git configuration
+git_user_name: "Alex Tacescu"
+git_user_email: "alextac98@gmail.com"
+git_editor: vim
+
+# Default flags
+is_work_machine: false
+install_gui_apps: true
+
+# Zsh plugins to install
+zsh_plugins:
+  - name: zsh-autosuggestions
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+  - name: zsh-syntax-highlighting
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting

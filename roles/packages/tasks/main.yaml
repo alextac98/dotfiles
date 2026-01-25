@@ -1,0 +1,103 @@
+---
+# Package installation - detects OS and uses appropriate package manager
+
+- name: Include OS-specific package variables
+  include_vars: "{{ ansible_facts.os_family }}.yaml"
+
+- name: Install packages on macOS via Homebrew
+  when: ansible_facts.os_family == 'Darwin'
+  block:
+    - name: Ensure Homebrew is installed
+      stat:
+        path: "{{ homebrew_prefix }}/bin/brew"
+      register: homebrew_check
+
+    - name: Install Homebrew
+      shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      when: not homebrew_check.stat.exists
+      environment:
+        NONINTERACTIVE: "1"
+
+    - name: Update Homebrew
+      homebrew:
+        update_homebrew: yes
+      changed_when: false
+
+    - name: Install Homebrew packages
+      homebrew:
+        name: "{{ packages }}"
+        state: present
+
+    - name: Install Homebrew casks
+      homebrew_cask:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ casks }}"
+      when: 
+        - casks is defined
+        - install_gui_apps | default(true)
+      failed_when: false  # Casks may already be installed outside of Homebrew
+
+- name: Install packages on Debian/Ubuntu via apt
+  when: ansible_facts.os_family == 'Debian'
+  block:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      become: yes
+
+    - name: Install apt packages
+      apt:
+        name: "{{ packages }}"
+        state: present
+      become: yes
+
+    - name: Create symlink for fd (fdfind on Debian)
+      file:
+        src: /usr/bin/fdfind
+        dest: "{{ local_bin }}/fd"
+        state: link
+      when: "'fd-find' in packages"
+      failed_when: false
+
+    - name: Create symlink for bat (batcat on Debian)
+      file:
+        src: /usr/bin/batcat
+        dest: "{{ local_bin }}/bat"
+        state: link
+      when: "'bat' in packages"
+      failed_when: false
+
+- name: Install packages on RedHat/Fedora via dnf
+  when: ansible_facts.os_family == 'RedHat'
+  block:
+    - name: Install dnf packages
+      dnf:
+        name: "{{ packages }}"
+        state: present
+      become: yes
+
+- name: Install packages on Arch via pacman
+  when: ansible_facts.os_family == 'Archlinux'
+  block:
+    - name: Install pacman packages
+      pacman:
+        name: "{{ packages }}"
+        state: present
+      become: yes
+
+- name: Install Starship on Linux (if not in package manager)
+  when: 
+    - ansible_facts.os_family != 'Darwin'
+    - install_starship_from_script | default(false)
+  block:
+    - name: Check if Starship is installed
+      command: which starship
+      register: starship_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install Starship via install script
+      shell: curl -sS https://starship.rs/install.sh | sh -s -- -y
+      when: starship_check.rc != 0

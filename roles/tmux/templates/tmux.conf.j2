@@ -1,0 +1,87 @@
+# {{ ansible_managed }}
+# Tmux configuration
+
+# =============================================================================
+# General Settings
+# =============================================================================
+
+# Set default shell
+set -g default-command "/bin/zsh"
+
+# Set prefix to Ctrl+B (default) - uncomment below to use Ctrl+A
+# set -g prefix C-a
+# unbind C-b
+# bind C-a send-prefix
+
+# Enable mouse support
+set -g mouse on
+
+# Start windows and panes at 1, not 0
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Renumber windows when one is closed
+set -g renumber-windows on
+
+# Increase scrollback buffer size
+set -g history-limit 50000
+
+# Address vim mode switching delay
+set -s escape-time 0
+
+# Increase tmux messages display duration
+set -g display-time 4000
+
+# Refresh status line more often
+set -g status-interval 5
+
+# =============================================================================
+# Colors and Terminal
+# =============================================================================
+
+# Enable true color support
+set -g default-terminal "xterm-256color"
+set -ga terminal-overrides ",*256col*:Tc"
+
+# =============================================================================
+# Key Bindings
+# =============================================================================
+
+# Vim-style copy mode
+set-window-option -g mode-keys vi
+bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+
+# OS-specific clipboard integration
+{% if ansible_facts.os_family == 'Darwin' %}
+# macOS: Use pbcopy
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'pbcopy'
+bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel 'pbcopy'
+{% else %}
+# Linux: Use xclip
+bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel '{{ clipboard_cmd }}'
+bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel '{{ clipboard_cmd }}'
+{% endif %}
+
+# Vim-like pane navigation
+bind -r h select-pane -L
+bind -r j select-pane -D
+bind -r k select-pane -U
+bind -r l select-pane -R
+
+# Split panes using | and - (more intuitive)
+bind | split-window -h -c "#{pane_current_path}"
+bind - split-window -v -c "#{pane_current_path}"
+
+# Reload configuration
+bind r source-file ~/.tmux.conf \; display-message "Config reloaded!"
+
+# =============================================================================
+# Status Bar
+# =============================================================================
+
+# Status bar position
+set -g status-position bottom
+
+# Update status bar every second
+set -g status-interval 1

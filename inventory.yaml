@@ -1,0 +1,51 @@
+---
+all:
+  children:
+    # OS-based groups
+    darwin:
+      hosts:
+        # Add macOS hosts here
+        # Host names must match the output of `hostname -s` on that machine
+        Macbook:
+          ansible_host: localhost
+          ansible_connection: local
+
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+
+    linux:
+      children:
+        debian:
+          hosts: {}
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+        redhat:
+          hosts: {}
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+        arch:
+          hosts: {}
+          vars:
+            ansible_python_interpreter: /usr/bin/python3
+
+    # Purpose-based groups
+    workstations:
+      children:
+        darwin: {}
+        # Add Linux workstations as needed
+
+    servers:
+      hosts: {}
+
+    # Ownership-based groups
+    work:
+      hosts: {}
+      # Add work machine hostnames here
+
+    personal:
+      hosts:
+        Mac: {}
+      # Add personal machine hostnames here
+
+  vars:
+    ansible_connection: local

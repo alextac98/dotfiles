@@ -1,0 +1,13 @@
+---
+# Work machine-specific variables
+
+is_work_machine: true
+
+# Override git email for work machines if needed
+git_user_name: "Alex Tacescu"
+git_user_email: "alex.tacescu@inversionspace.com"
+
+# Additional work-specific packages can be added here
+# work_packages:
+#   - slack
+#   - zoom

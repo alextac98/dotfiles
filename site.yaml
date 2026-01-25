@@ -1,0 +1,61 @@
+---
+# Main dotfiles playbook
+# Usage:
+#   ./run.sh                    # Recommended: auto-detects hostname
+#   ./run.sh --tags zsh         # Run specific tags
+#   ./run.sh --check --diff     # Dry run
+
+- name: Configure dotfiles
+  hosts: all
+  connection: local
+  gather_facts: yes
+
+  pre_tasks:
+    - name: Display system information
+      debug:
+        msg: |
+          Hostname: {{ ansible_facts.hostname }}
+          OS: {{ ansible_facts.os_family }} ({{ ansible_facts.distribution | default('N/A') }})
+          Architecture: {{ ansible_facts.architecture }}
+          User: {{ ansible_facts.user_id }}
+      tags: always
+
+  roles:
+    - role: core
+      tags: [core, always]
+
+    - role: packages
+      tags: [packages]
+
+    - role: ohmyzsh
+      tags: [zsh, ohmyzsh]
+
+    - role: zsh
+      tags: [zsh]
+
+    - role: tmux
+      tags: [tmux]
+
+    - role: starship
+      tags: [starship, prompt]
+
+    - role: ghostty
+      tags: [ghostty, terminal]
+      when: ansible_facts.os_family == 'Darwin' or install_ghostty | default(false)
+
+    - role: git
+      tags: [git]
+
+    - role: fonts
+      tags: [fonts]
+
+  post_tasks:
+    - name: Setup complete
+      debug:
+        msg: |
+          Dotfiles setup complete!
+          
+          Next steps:
+            1. Restart your terminal or run: source ~/.zshrc
+            2. If zsh isn't your default shell: chsh -s $(which zsh)
+      tags: always
