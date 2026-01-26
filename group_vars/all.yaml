@@ -23,9 +23,27 @@ git_editor: vim
 is_work_machine: false
 install_gui_apps: true
 
-# Zsh plugins to install
-zsh_plugins:
-  - name: zsh-autosuggestions
-    repo: https://github.com/zsh-users/zsh-autosuggestions
-  - name: zsh-syntax-highlighting
-    repo: https://github.com/zsh-users/zsh-syntax-highlighting
+# Zinit plugins configuration
+# Each plugin can have:
+#   - repo: (required) Plugin repo or OMZ snippet (e.g., "OMZP::git", "zsh-users/zsh-autosuggestions")
+#   - type: "snippet" for OMZ snippets, omit for regular plugins
+#   - turbo: true to defer loading until after prompt (recommended for most plugins)
+#   - ice: Zinit ice modifiers (e.g., 'atload"!_zsh_autosuggest_start"')
+zinit_plugins:
+  # OMZ Git plugin (aliases only, no framework overhead)
+  - repo: OMZP::git
+    type: snippet
+
+  # Syntax highlighting (turbo loaded)
+  - repo: zdharma-continuum/fast-syntax-highlighting
+    turbo: true
+    ice: 'atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"'
+
+  # Autosuggestions (turbo loaded)
+  - repo: zsh-users/zsh-autosuggestions
+    turbo: true
+    ice: 'atload"!_zsh_autosuggest_start"'
+
+  # fzf-tab (turbo loaded)
+  - repo: Aloxaf/fzf-tab
+    turbo: true

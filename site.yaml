@@ -27,9 +27,6 @@
     - role: packages
       tags: [packages]
 
-    - role: ohmyzsh
-      tags: [zsh, ohmyzsh]
-
     - role: zsh
       tags: [zsh]
 

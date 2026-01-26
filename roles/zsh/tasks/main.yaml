@@ -1,6 +1,37 @@
 ---
-# Zsh configuration
+# Zsh configuration with Zinit plugin manager
 
+# =============================================================================
+# Zinit Installation
+# =============================================================================
+- name: Set Zinit installation path
+  set_fact:
+    zinit_dir: "{{ xdg_data_home }}/zinit"
+    zinit_repo: "{{ xdg_data_home }}/zinit/zinit.git"
+
+- name: Ensure Zinit directory exists
+  file:
+    path: "{{ zinit_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Clone Zinit repository
+  git:
+    repo: https://github.com/zdharma-continuum/zinit.git
+    dest: "{{ zinit_repo }}"
+    depth: 1
+
+# =============================================================================
+# Oh My Zsh Cleanup (migration)
+# =============================================================================
+- name: Remove old Oh My Zsh installation
+  file:
+    path: "{{ xdg_data_home }}/oh-my-zsh"
+    state: absent
+
+# =============================================================================
+# Zsh Configuration Deployment
+# =============================================================================
 - name: Deploy .zshrc from template
   template:
     src: zshrc.j2

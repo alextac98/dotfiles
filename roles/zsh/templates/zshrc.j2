@@ -9,22 +9,25 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 # =============================================================================
-# Oh My Zsh Configuration
+# Zinit Plugin Manager
 # =============================================================================
-export ZSH="$XDG_DATA_HOME/oh-my-zsh"
-ZSH_CUSTOM="$ZSH/custom"
+ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
 
-# Plugins to load
-plugins=(
-    git
-{% for plugin in zsh_plugins %}
-    {{ plugin.name }}
+# Load Zinit
+if [[ -f "${ZINIT_HOME}/zinit.zsh" ]]; then
+    source "${ZINIT_HOME}/zinit.zsh"
+
+    # Load plugins from Ansible configuration
+{% for plugin in zinit_plugins %}
+{% if plugin.type | default('') == 'snippet' %}
+    zinit snippet {{ plugin.repo }}
+{% elif plugin.turbo | default(false) %}
+    zinit wait lucid {{ plugin.ice | default('') }} for \
+        {{ plugin.repo }}
+{% else %}
+    zinit light {{ plugin.repo }}
+{% endif %}
 {% endfor %}
-)
-
-# Load Oh My Zsh
-if [[ -d "$ZSH" ]]; then
-    source "$ZSH/oh-my-zsh.sh"
 fi
 
 # =============================================================================
@@ -104,7 +107,7 @@ alias grep="grep --color=auto"
 alias fgrep="fgrep --color=auto"
 alias egrep="egrep --color=auto"
 
-# Git (beyond oh-my-zsh plugin)
+# Git (beyond OMZ git plugin)
 alias gs="git status"
 alias gd="git diff"
 alias gds="git diff --staged"
