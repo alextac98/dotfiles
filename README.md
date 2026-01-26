@@ -13,6 +13,16 @@ Personal dotfiles managed with [Ansible](https://www.ansible.com/).
 
 ## Quick Start
 
+```bash
+
+# Run the setup/update script
+./run.sh
+
+# Run the script for a particular tag
+./run.sh --tags zsh     # For updating zsh configs only
+
+```
+
 ### New Machine
 
 ```bash
