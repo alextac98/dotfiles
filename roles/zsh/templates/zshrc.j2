@@ -97,11 +97,6 @@ alias la="ls -A --color=auto"
 alias l="ls -CF --color=auto"
 {% endif %}
 
-# Safety
-alias rm="rm -i"
-alias cp="cp -i"
-alias mv="mv -i"
-
 # Grep
 alias grep="grep --color=auto"
 alias fgrep="fgrep --color=auto"
@@ -109,10 +104,14 @@ alias egrep="egrep --color=auto"
 
 # Git (beyond OMZ git plugin)
 alias gs="git status"
+alias ga="git add"
+alias=gc="git commit"
 alias gd="git diff"
 alias gds="git diff --staged"
-alias gp="git push"
+alias gpu="git push"
+alias gpf="git push --force"
 alias gl="git pull"
+alias gf="git fetch"
 alias glog="git log --oneline --graph --decorate -20"
 
 # Editor

@@ -29,11 +29,11 @@ install_gui_apps: true
 #   - type: "snippet" for OMZ snippets, omit for regular plugins
 #   - turbo: true to defer loading until after prompt (recommended for most plugins)
 #   - ice: Zinit ice modifiers (e.g., 'atload"!_zsh_autosuggest_start"')
+# Deleting a plugin:
+#   - remove from below
+#   - run `zinit delete <repo>`
+#   - rerun playbook (`./run.sh --tags zsh`)
 zinit_plugins:
-  # OMZ Git plugin (aliases only, no framework overhead)
-  - repo: OMZP::git
-    type: snippet
-
   # Syntax highlighting (turbo loaded)
   - repo: zdharma-continuum/fast-syntax-highlighting
     turbo: true
